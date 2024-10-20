@@ -384,15 +384,14 @@ def tensor_reduce(
     ) -> None:
         # TODO: Implement for Task 2.3.
         all_indices = []
-        num_dims = len(out_shape)
+        num_dims = len(a_shape)
         a_index = np.zeros(num_dims, dtype=int)
 
         while True:
             all_indices.append(a_index.copy())
-
             for dim in reversed(range(num_dims)):
                 a_index[dim] += 1
-                if a_index[dim] < out_shape[dim]:
+                if a_index[dim] < a_shape[dim]:
                     break
                 a_index[dim] = 0
             else:
@@ -405,21 +404,6 @@ def tensor_reduce(
             out_position = index_to_position(out_index, out_strides)
             a_position = index_to_position(index, a_strides)
             out[out_position] = fn(out[out_position], a_storage[a_position])
-
-        
-        # for i in all_indices:
-        #     index = np.array(i, dtype=int)
-        #     value = 0.0
-
-        #     a_index[list(index)] = index.copy()
-        #     for k in range(a_shape[reduce_dim]):
-        #         a_index[reduce_dim] = k
-
-        #         input_position = index_to_position(a_index, a_strides)
-        #         value = fn(value, a_storage[input_position])
-                
-        #     out[index_to_position(index, out_strides)] = value
-
     return _reduce
 
 
