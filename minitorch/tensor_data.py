@@ -9,7 +9,6 @@ import numpy as np
 import numpy.typing as npt
 from numpy import array, float64
 from typing_extensions import TypeAlias
-from itertools import zip_longest
 
 
 from .operators import prod
@@ -93,11 +92,12 @@ def broadcast_index(
 
     """
     # TODO: Implement for Task 2.2.
-    for i in range(min(len(big_shape), len(shape))):
+    out_index[:] = 0
+    for i in range(len(shape)):
         if big_shape[-i-1] == 1 or shape[-i-1] == 1:
-            out_index = np.insert(out_index, 0, 0)
+            out_index[-i-1] = 0
         elif big_shape[-i-1] == shape[-i-1]:
-            out_index = np.insert(out_index, 0, big_index[-i-1])
+            out_index[-i-1] = big_index[-i-1]
         else:
             raise IndexingError('cannot broadcast')
 
@@ -117,7 +117,14 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     """
     # TODO: Implement for Task 2.2.
     unionShape = []
-    for i, j in zip_longest(reversed(shape1), reversed(shape2), fillvalue=1):
+    len1 = len(shape1)
+    len2 = len(shape2)
+    if len1 < len2:
+        shape1 = (1,) * (len2 - len1) + tuple(shape1)
+    elif len2 < len1:
+        shape2 = (1,) * (len1 - len2) + tuple(shape2)
+
+    for i, j in zip(shape1, shape2):
         if i == 1:
             unionShape.append(j)
         elif j == 1:
@@ -127,9 +134,7 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
         else:
             raise IndexingError('cannot broadcast')
 
-    return tuple(unionShape[::-1])
-    
-
+    return tuple(unionShape)
 
 
 def strides_from_shape(shape: UserShape) -> UserStrides:
