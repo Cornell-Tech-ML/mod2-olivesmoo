@@ -143,6 +143,8 @@ class Sum(Function):
         if dim is None: # TODO: check this
             for _ in range(len(t1.shape)):
                 t1 = t1.f.add_reduce(t1, 0)
+                if len(t1.shape) > 1: # TODO: find a better way?
+                    t1 = minitorch.Tensor.make(t1._tensor._storage, t1.shape[1:], backend=t1.backend)
             return t1
         return t1.f.add_reduce(t1, int(dim.item()))
 
