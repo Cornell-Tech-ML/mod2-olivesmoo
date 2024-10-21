@@ -360,14 +360,18 @@ class Tensor:
     
     def mean(self, dim: Optional[int] = None):
         if dim is None:
-            return Sum.apply(self, self._ensure_tensor(-1)) / self.size
+            return Sum.apply(self) * (1 / self.size)
         else:
-            return Sum.apply(self, self._ensure_tensor(dim)) / self.shape[dim]
+            return Sum.apply(self, self._ensure_tensor(dim)) * (1/self.shape[dim])
 
     def permute(self, *dim: int):
+        if len(dim) == 0:
+            return self
         return Permute.apply(self, Tensor.make(list(dim), (len(dim),), backend=self.backend))
 
     def view(self, *dim: int):
+        if len(dim) == 0:
+            return self
         return View.apply(self, Tensor.make(list(dim), (len(dim),), backend=self.backend))
 
     def zero_grad_(self):
