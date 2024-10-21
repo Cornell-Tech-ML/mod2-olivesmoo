@@ -234,12 +234,18 @@ class Permute(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
         (t1, order) = ctx.saved_values
-        # ones = minitorch.Tensor.make([1.0] * t1.size, t1.shape, backend=t1.backend)
-        output = grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output)
+
+        order_items = order._tensor._storage.tolist()
+        order_items = list(map(int, order_items))
+        
+        reverse_order = [0] * len(order_items)
+        for i, item in enumerate(order_items):
+            reverse_order[item] = i
+
+        unpermuted_grad = minitorch.Tensor(grad_output._tensor.permute(*reverse_order), backend=grad_output.backend)
+        output = unpermuted_grad.f.add_zip(zeros(t1.shape, t1.backend), unpermuted_grad)
+
         return (output, 0.0)
-        # return (grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output), 0.0)
-        # grad_t1 = grad_output.f.mul_zip(ones, grad_output)
-        # return (grad_t1, 0.0)
 
 
 class View(Function):
