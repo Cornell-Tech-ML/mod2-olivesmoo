@@ -10,6 +10,7 @@ import numpy.typing as npt
 from numpy import array, float64
 from typing_extensions import TypeAlias
 
+
 from .operators import prod
 
 MAX_DIMS = 32
@@ -45,7 +46,10 @@ def index_to_position(index: Index, strides: Strides) -> int:
 
     """
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError("Need to implement for Task 2.1")
+    pos = 0
+    for i, s in zip(index, strides):
+        pos += i * s
+    return pos
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
@@ -61,7 +65,11 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
 
     """
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError("Need to implement for Task 2.1")
+    index = []
+    for dim in reversed(shape):
+        index.append(ordinal % dim)
+        ordinal = ordinal // dim
+    out_index[:] = list(reversed(index))
 
 
 def broadcast_index(
@@ -84,8 +92,14 @@ def broadcast_index(
 
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError("Need to implement for Task 2.2")
-
+    out_index[:] = 0
+    for i in range(len(shape)):
+        if big_shape[-i-1] == 1 or shape[-i-1] == 1:
+            out_index[-i-1] = 0
+        elif big_shape[-i-1] == shape[-i-1]:
+            out_index[-i-1] = big_index[-i-1]
+        else:
+            raise IndexingError('cannot broadcast')
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     """Broadcast two shapes to create a new union shape.
@@ -102,7 +116,25 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
 
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError("Need to implement for Task 2.2")
+    unionShape = []
+    len1 = len(shape1)
+    len2 = len(shape2)
+    if len1 < len2:
+        shape1 = (1,) * (len2 - len1) + tuple(shape1)
+    elif len2 < len1:
+        shape2 = (1,) * (len1 - len2) + tuple(shape2)
+
+    for i, j in zip(shape1, shape2):
+        if i == 1:
+            unionShape.append(j)
+        elif j == 1:
+            unionShape.append(i)
+        elif j == i:
+            unionShape.append(i)
+        else:
+            raise IndexingError('cannot broadcast')
+
+    return tuple(unionShape)
 
 
 def strides_from_shape(shape: UserShape) -> UserStrides:
@@ -232,7 +264,15 @@ class TensorData:
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
         # TODO: Implement for Task 2.1.
-        raise NotImplementedError("Need to implement for Task 2.1")
+        # print("order type", type(order), order)
+        # print("before: ", self.shape)
+        # print("data", self._storage)
+        new_shape = tuple(self.shape[dim] for dim in order)
+        new_strides = tuple(self.strides[dim] for dim in order)
+        # print("after: ", new_shape)
+        tensor = TensorData(self._storage, new_shape, new_strides)
+        # print("new tensor", tensor)
+        return tensor
 
     def to_string(self) -> str:
         """Convert to string"""
