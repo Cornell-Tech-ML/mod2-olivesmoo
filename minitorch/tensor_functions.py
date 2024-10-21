@@ -14,7 +14,7 @@ from .autodiff import Context
 from .tensor_ops import SimpleBackend, TensorBackend
 
 if TYPE_CHECKING:
-    from typing import Any, List, Tuple, Optional
+    from typing import Any, List, Tuple, Optional, Union
 
     from .tensor import Tensor
     from .tensor_data import UserIndex, UserShape
@@ -181,12 +181,14 @@ class Sum(Function):
         return t1.f.add_reduce(t1, int(dim.item()))
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tensor:
+    def backward(ctx: Context, grad_output: Tensor) ->  Union[Tensor, Tuple[Tensor, float]]:
         t1, dim = ctx.saved_tensors
-        
-        return grad_output
-        
-
+        output = grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output)
+        if dim is not None:
+            return (output, 0.0)
+        else:
+            return output
+                
 class LT(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor, t2: Tensor) -> Tensor:
@@ -222,21 +224,22 @@ class IsClose(Function):
 
 class Permute(Function):
     @staticmethod
-    def forward(ctx: Context, t1: Tensor, order: Tuple[int]) -> Tensor:
-        ctx.save_for_backward(t1)
-        print("the order", order)
-        print("the tensor", t1)
-        print("len order", type(order))
-        print("len shape", t1.shape)
-
-        permuted_data = t1._tensor.permute(*order)
-        print("permuted data shape", permuted_data.shape)
-        return minitorch.Tensor(permuted_data)
+    def forward(ctx: Context, t1: Tensor, order: Tensor) -> Tensor:
+        ctx.save_for_backward(t1, order)
+        order_items = order._tensor._storage.tolist()
+        order_items = list(map(int, order_items))
+        permuted_data = t1._tensor.permute(*order_items)
+        return minitorch.Tensor(permuted_data, backend=t1.backend)
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tensor:
-         (t1,) = ctx.saved_tensors
-         return zeros(list(t1.size))
+    def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
+        (t1, order) = ctx.saved_values
+        # ones = minitorch.Tensor.make([1.0] * t1.size, t1.shape, backend=t1.backend)
+        output = grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output)
+        return (output, 0.0)
+        # return (grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output), 0.0)
+        # grad_t1 = grad_output.f.mul_zip(ones, grad_output)
+        # return (grad_t1, 0.0)
 
 
 class View(Function):
