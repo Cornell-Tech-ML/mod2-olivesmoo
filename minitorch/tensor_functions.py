@@ -410,7 +410,7 @@ class Sum(Function):
             with a gradient and a float indicating the dimension.
 
         """
-        t1, dim = ctx.saved_tensors
+        (t1, dim) = ctx.saved_values
         output = grad_output.f.add_zip(zeros(t1.shape, t1.backend), grad_output)
         if dim is not None:
             return (output, 0.0)
