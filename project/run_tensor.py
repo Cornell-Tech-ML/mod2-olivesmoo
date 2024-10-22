@@ -4,6 +4,7 @@ Be sure you have minitorch installed in you Virtual Env.
 """
 
 import minitorch
+import random
 
 # Use this function to make a random parameter in
 # your module.
@@ -12,7 +13,52 @@ def RParam(*shape):
     return minitorch.Parameter(r)
 
 # TODO: Implement for Task 2.5.
+#Implement a neural network over the data with three linears (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)). 
+# It should do exactly the same thing as the corresponding functions in project/run_scalar.py, but now use the tensor code base.
 
+# Train a tensor model and add your results for all datasets to the README.
+
+# Record the time per epoch reported by the trainer. (It is okay if it is slow).
+class Network(minitorch.Module):
+    def __init__(self, hidden_layers):
+        super().__init__()
+        self.layer1 = Linear(2, hidden_layers)
+        self.layer2 = Linear(hidden_layers, hidden_layers)
+        self.layer3 = Linear(hidden_layers, 1)
+
+    def forward(self, x):
+        middle = self.layer1.forward(x).relu()
+        hidden = self.layer2.forward(middle).relu()
+        output = self.layer3.forward(hidden).sigmoid()
+        return output
+
+class Linear(minitorch.Module):
+    def __init__(self, in_size, out_size):
+        super().__init__()
+        backend = minitorch.TensorBackend(minitorch.SimpleOps)
+        random_weights = [(2 * (random.random() - 0.5)) for _ in range(in_size * out_size)]
+        random_bias = [(2 * (random.random() - 0.5)) for _ in range(out_size)]
+
+        self.weights = self.add_parameter("weight", minitorch.Tensor.make(random_weights, (in_size, out_size), backend=backend))
+        self.bias = self.add_parameter("bias", minitorch.Tensor.make(random_bias, (1, out_size), backend=backend))
+
+    def forward(self, x: minitorch.Tensor):
+        # print("Shape of x before reshaping:", x.shape)
+        # print("the x: ", x)
+        # print("the weight: ", self.weights, self.weights.shape)
+        # print("the bias: ", self.bias, self.bias.shape)
+        x_reshaped = x.view(*x.shape, 1)
+        # x_reshaped = x.view(1, 2, 1)
+        # print("x reshaped", x_reshaped)
+        product = x_reshaped * self.weights.value
+        # print("the product", product)
+        # print("shape of product", product.shape)
+        result = product.sum(1).view(product.shape[0], product.shape[2])
+        # print("reduced: ", result, result.shape)
+        result = result + self.bias.value
+        # print("result: ", result)
+        return result
+    
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
 
