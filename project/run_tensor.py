@@ -12,13 +12,6 @@ def RParam(*shape):
     r = 2 * (minitorch.rand(shape) - 0.5)
     return minitorch.Parameter(r)
 
-# TODO: Implement for Task 2.5.
-#Implement a neural network over the data with three linears (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)).
-# It should do exactly the same thing as the corresponding functions in project/run_scalar.py, but now use the tensor code base.
-
-# Train a tensor model and add your results for all datasets to the README.
-
-# Record the time per epoch reported by the trainer. (It is okay if it is slow).
 class Network(minitorch.Module):
     def __init__(self, hidden_layers):
         super().__init__()
@@ -43,20 +36,10 @@ class Linear(minitorch.Module):
         self.bias = self.add_parameter("bias", minitorch.Tensor.make(random_bias, (1, out_size), backend=backend))
 
     def forward(self, x: minitorch.Tensor):
-        # print("Shape of x before reshaping:", x.shape)
-        # print("the x: ", x)
-        # print("the weight: ", self.weights, self.weights.shape)
-        # print("the bias: ", self.bias, self.bias.shape)
         x_reshaped = x.view(*x.shape, 1)
-        # x_reshaped = x.view(1, 2, 1)
-        # print("x reshaped", x_reshaped)
         product = x_reshaped * self.weights.value
-        # print("the product", product)
-        # print("shape of product", product.shape)
         result = product.sum(1).view(product.shape[0], product.shape[2])
-        # print("reduced: ", result, result.shape)
         result = result + self.bias.value
-        # print("result: ", result)
         return result
 
 def default_log_fn(epoch, total_loss, correct, losses):

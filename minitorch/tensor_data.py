@@ -47,7 +47,6 @@ def index_to_position(index: Index, strides: Strides) -> int:
         Position in storage
 
     """
-    # TODO: Implement for Task 2.1.
     pos = 0
     for i, s in zip(index, strides):
         pos += i * s
@@ -67,7 +66,6 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
         out_index : return index corresponding to position.
 
     """
-    # TODO: Implement for Task 2.1.
     index = []
     for dim in reversed(shape):
         index.append(ordinal % dim)
@@ -96,7 +94,6 @@ def broadcast_index(
         None
 
     """
-    # TODO: Implement for Task 2.2.
     out_index[:] = 0
     for i in range(len(shape)):
         if big_shape[-i - 1] == 1 or shape[-i - 1] == 1:
@@ -124,7 +121,6 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
         IndexingError : if cannot broadcast
 
     """
-    # TODO: Implement for Task 2.2.
     unionShape = []
     len1 = len(shape1)
     len2 = len(shape2)
@@ -349,15 +345,9 @@ class TensorData:
             range(len(self.shape))
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
-        # TODO: Implement for Task 2.1.
-        # print("order type", type(order), order)
-        # print("before: ", self.shape)
-        # print("data", self._storage)
         new_shape = tuple(self.shape[dim] for dim in order)
         new_strides = tuple(self.strides[dim] for dim in order)
-        # print("after: ", new_shape)
         tensor = TensorData(self._storage, new_shape, new_strides)
-        # print("new tensor", tensor)
         return tensor
 
     def to_string(self) -> str:

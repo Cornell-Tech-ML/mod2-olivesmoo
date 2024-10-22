@@ -178,7 +178,6 @@ class All(Function):
             return a.f.mul_reduce(a.contiguous().view(int(operators.prod(a.shape))), 0)
 
 
-# TODO: Implement for Task 2.3.
 class Mul(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor, t2: Tensor) -> Tensor:
@@ -384,10 +383,10 @@ class Sum(Function):
 
         """
         ctx.save_for_backward(t1, dim)
-        if dim is None:  # TODO: check this
+        if dim is None:
             for _ in range(len(t1.shape)):
                 t1 = t1.f.add_reduce(t1, 0)
-                if len(t1.shape) > 1:  # TODO: find a better way?
+                if len(t1.shape) > 1:
                     t1 = minitorch.Tensor.make(
                         t1._tensor._storage, t1.shape[1:], backend=t1.backend
                     )

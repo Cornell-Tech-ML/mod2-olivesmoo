@@ -273,7 +273,6 @@ def tensor_map(
         in_shape: Shape,
         in_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
         all_indices = []
         num_dims = len(out_shape)
         out_index = np.zeros(num_dims, dtype=int)
@@ -341,7 +340,6 @@ def tensor_zip(
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
         all_indices = []
         num_dims = len(out_shape)
         out_index = np.zeros(num_dims, dtype=int)
@@ -402,7 +400,6 @@ def tensor_reduce(
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
-        # TODO: Implement for Task 2.3.
         all_indices = []
         num_dims = len(a_shape)
         a_index = np.zeros(num_dims, dtype=int)
