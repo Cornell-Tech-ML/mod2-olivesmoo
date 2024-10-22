@@ -56,3 +56,14 @@ Parameters
 <img width="226" alt="split table" src="https://github.com/user-attachments/assets/9b8b8a6e-c0fc-49f0-aaa7-3aeced2074d1">
 <img width="280" alt="split log" src="https://github.com/user-attachments/assets/46706bb7-f5b1-4030-b4b2-e329bd8507be">
 
+### Xor
+Parameters
+- Number of points: 75
+- Size of hidden layer: 13
+- Learning Rate: 0.5
+- Number of epochs: 500
+
+![Xor plot](https://github.com/user-attachments/assets/6859f08b-e531-4011-a87c-a65fb1ef56e2)
+![xor loss](https://github.com/user-attachments/assets/a842dd79-ec77-4ee8-b8ce-280514fd6bdd)
+<img width="220" alt="xor table" src="https://github.com/user-attachments/assets/c038a47b-0594-468f-ae91-4d243eedee6b">
+<img width="278" alt="xor log" src="https://github.com/user-attachments/assets/91040b25-e8fc-4c27-b391-01b952fd8644">
