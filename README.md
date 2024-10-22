@@ -44,3 +44,15 @@ Parameters
 <img width="227" alt="diag table" src="https://github.com/user-attachments/assets/29e10e08-9037-47a5-83da-dbfad6a856fa">
 <img width="283" alt="diag logs" src="https://github.com/user-attachments/assets/f15e1b58-2550-4340-b6d3-7d68e3d5f1fc">
 
+### Split
+Parameters
+- Number of points: 50
+- Size of hidden layer: 10
+- Learning Rate: 0.5
+- Number of epochs: 500
+
+![split plot](https://github.com/user-attachments/assets/aa742c9c-d923-4f75-860d-3b8c6ed05a0b)
+![split loss](https://github.com/user-attachments/assets/aedf6e75-222d-4b61-9d57-6614e6329808)
+<img width="226" alt="split table" src="https://github.com/user-attachments/assets/9b8b8a6e-c0fc-49f0-aaa7-3aeced2074d1">
+<img width="280" alt="split log" src="https://github.com/user-attachments/assets/46706bb7-f5b1-4030-b4b2-e329bd8507be">
+
