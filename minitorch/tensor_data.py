@@ -38,10 +38,12 @@ def index_to_position(index: Index, strides: Strides) -> int:
     storage based on strides.
 
     Args:
+    ----
         index : index tuple of ints
         strides : tensor strides
 
     Returns:
+    -------
         Position in storage
 
     """
@@ -59,6 +61,7 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
     may not be the inverse of `index_to_position`.
 
     Args:
+    ----
         ordinal: ordinal position to convert.
         shape : tensor shape.
         out_index : return index corresponding to position.
@@ -82,36 +85,42 @@ def broadcast_index(
     removed.
 
     Args:
+    ----
         big_index : multidimensional index of bigger tensor
         big_shape : tensor shape of bigger tensor
         shape : tensor shape of smaller tensor
         out_index : multidimensional index of smaller tensor
 
     Returns:
+    -------
         None
 
     """
     # TODO: Implement for Task 2.2.
     out_index[:] = 0
     for i in range(len(shape)):
-        if big_shape[-i-1] == 1 or shape[-i-1] == 1:
-            out_index[-i-1] = 0
-        elif big_shape[-i-1] == shape[-i-1]:
-            out_index[-i-1] = big_index[-i-1]
+        if big_shape[-i - 1] == 1 or shape[-i - 1] == 1:
+            out_index[-i - 1] = 0
+        elif big_shape[-i - 1] == shape[-i - 1]:
+            out_index[-i - 1] = big_index[-i - 1]
         else:
-            raise IndexingError('cannot broadcast')
+            raise IndexingError("cannot broadcast")
+
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     """Broadcast two shapes to create a new union shape.
 
     Args:
+    ----
         shape1 : first shape
         shape2 : second shape
 
     Returns:
+    -------
         broadcasted shape
 
     Raises:
+    ------
         IndexingError : if cannot broadcast
 
     """
@@ -132,7 +141,7 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
         elif j == i:
             unionShape.append(i)
         else:
-            raise IndexingError('cannot broadcast')
+            raise IndexingError("cannot broadcast")
 
     return tuple(unionShape)
 
@@ -189,7 +198,8 @@ class TensorData:
     def is_contiguous(self) -> bool:
         """Check that the layout is contiguous, i.e. outer dimensions have bigger strides than inner dimensions.
 
-        Returns:
+        Returns
+        -------
             bool : True if contiguous
 
         """
@@ -202,9 +212,48 @@ class TensorData:
 
     @staticmethod
     def shape_broadcast(shape_a: UserShape, shape_b: UserShape) -> UserShape:
+        """Compute the broadcasted shape of two tensors.
+
+        Args:
+        ----
+            shape_a (UserShape): The shape of the first tensor.
+            shape_b (UserShape): The shape of the second tensor.
+
+        Returns:
+        -------
+            UserShape: The broadcasted shape resulting from combining
+            `shape_a` and `shape_b`.
+
+        Raises:
+        ------
+            ValueError: If the shapes are not compatible for broadcasting.
+
+        """
         return shape_broadcast(shape_a, shape_b)
 
     def index(self, index: Union[int, UserIndex]) -> int:
+        """Retrieve the position index based on the provided indexing scheme.
+
+        Args:
+        ----
+            index (Union[int, UserIndex]): The index or tuple of indices
+            to access the tensor. If a single integer is provided, it will be
+            treated as an index for a 1D tensor.
+
+        Returns:
+        -------
+            int: The linear position index corresponding to the provided
+            index.
+
+        Raises:
+        ------
+            IndexingError: If the index is out of range or does not match
+            the shape of the tensor. Specifically, this is raised if:
+                - The index array length does not match the number of dimensions of the tensor.
+                - Any index is greater than or equal to the size of the corresponding dimension.
+                - Any index is negative (negative indexing is not supported).
+
+        """
         if isinstance(index, int):
             aindex: Index = array([index])
         else:  # if isinstance(index, tuple):
@@ -228,6 +277,18 @@ class TensorData:
         return index_to_position(array(index), self._strides)
 
     def indices(self) -> Iterable[UserIndex]:
+        """Generate all valid indices for the tensor.
+
+        This method yields all possible indices for the tensor based on its shape.
+        Each index is returned as a tuple, allowing iteration over all indices
+        in a multi-dimensional tensor.
+
+        Yields
+        ------
+            Iterable[UserIndex]: An iterable of tuples representing valid indices
+            for the tensor.
+
+        """
         lshape: Shape = array(self.shape)
         out_index: Index = array(self.shape)
         for i in range(self.size):
@@ -239,10 +300,33 @@ class TensorData:
         return tuple((random.randint(0, s - 1) for s in self.shape))
 
     def get(self, key: UserIndex) -> float:
+        """Retrieve the value at the specified index.
+
+        Args:
+        ----
+            key (UserIndex): The index of the element to retrieve.
+
+        Returns:
+        -------
+            float: The value stored in the tensor at the specified index.
+
+        """
         x: float = self._storage[self.index(key)]
         return x
 
     def set(self, key: UserIndex, val: float) -> None:
+        """Set the value at the specified index.
+
+        Args:
+        ----
+            key (UserIndex): The index at which to set the value.
+            val (float): The value to set at the specified index.
+
+        Returns:
+        -------
+            None
+
+        """
         self._storage[self.index(key)] = val
 
     def tuple(self) -> Tuple[Storage, Shape, Strides]:
@@ -253,9 +337,11 @@ class TensorData:
         """Permute the dimensions of the tensor.
 
         Args:
+        ----
             *order: a permutation of the dimensions
 
         Returns:
+        -------
             New `TensorData` with the same storage and a new dimension order.
 
         """

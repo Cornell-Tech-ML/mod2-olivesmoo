@@ -30,7 +30,7 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
 
     vals1[arg] = vals1[arg] + epsilon
     vals2[arg] = vals2[arg] - epsilon
-    
+
     delta = f(*vals1) - f(*vals2)
     return delta / (2 * epsilon)
 

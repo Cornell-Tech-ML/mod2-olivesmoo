@@ -47,7 +47,7 @@ class Linear(minitorch.Module):
             for j in range(len(y)):
                 y[j] = y[j] + x * self.weights[i][j].value
         return y
-    
+
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
 

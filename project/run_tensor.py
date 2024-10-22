@@ -13,7 +13,7 @@ def RParam(*shape):
     return minitorch.Parameter(r)
 
 # TODO: Implement for Task 2.5.
-#Implement a neural network over the data with three linears (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)). 
+#Implement a neural network over the data with three linears (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)).
 # It should do exactly the same thing as the corresponding functions in project/run_scalar.py, but now use the tensor code base.
 
 # Train a tensor model and add your results for all datasets to the README.
@@ -58,7 +58,7 @@ class Linear(minitorch.Module):
         result = result + self.bias.value
         # print("result: ", result)
         return result
-    
+
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
 
