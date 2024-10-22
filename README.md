@@ -25,9 +25,22 @@ Parameters
 - Number of points: 50
 - Size of hidden layer: 3
 - Learning Rate: 0.05
-- Epochs: 500
+- Number of epochs: 500
+
 ![simple plot](https://github.com/user-attachments/assets/cc1c6e41-4472-44d6-876a-f34709d5d062)
 ![simple loss](https://github.com/user-attachments/assets/b8427689-e605-4c8c-bd17-dbd3f0dec225)
 <img width="221" alt="simple table" src="https://github.com/user-attachments/assets/63a5dba6-7c01-4bb2-b0b3-81f733f7be82">
 <img width="297" alt="simple logs" src="https://github.com/user-attachments/assets/b2b35848-a8a8-4710-aee4-f85239ed1985">
+
+### Diag
+Parameters
+- Number of points: 101
+- Size of hidden layer: 7
+- Learning Rate: 0.5
+- Number of epochs: 200
+
+![diag graph](https://github.com/user-attachments/assets/e94d39ef-44b0-4fd2-8ec7-967e672df5b6)
+![diag loss](https://github.com/user-attachments/assets/653c8c18-7ae4-4b2a-8ee1-bd6efa31ea3f)
+<img width="227" alt="diag table" src="https://github.com/user-attachments/assets/29e10e08-9037-47a5-83da-dbfad6a856fa">
+<img width="283" alt="diag logs" src="https://github.com/user-attachments/assets/f15e1b58-2550-4340-b6d3-7d68e3d5f1fc">
 
